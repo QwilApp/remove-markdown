@@ -1,6 +1,6 @@
 {
-  "name": "remove-markdown",
-  "version": "0.3.0",
+  "name": "@qwilapp/remove-markdown",
+  "version": "0.3.0-redos-fix",
   "description": "Remove Markdown formatting from text",
   "main": "index.js",
   "scripts": {

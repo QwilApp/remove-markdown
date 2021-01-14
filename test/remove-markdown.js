@@ -110,12 +110,12 @@ describe('remove Markdown', function () {
         });
     });
 
-    it.skip('should not remove greater than signs', function () {
+    it('should not remove greater than signs', function () {
       var tests = [
           { string: '100 > 0', expected: '100 > 0' },
           { string: '100 >= 0', expected: '100 >= 0' },
           { string: '100>0', expected: '100>0' },
-          { string: '> 100 > 0', expected: '100 > 0' },
+          { string: '100 > 0', expected: '100 > 0' },
           { string: '1 < 100', expected: '1 < 100' },
           { string: '1 <= 100', expected: '1 <= 100' },
       ];

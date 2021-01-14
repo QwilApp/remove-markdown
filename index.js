@@ -38,10 +38,6 @@ module.exports = function(md, options) {
       .replace(/\s{0,2}\[.*?\]: .*?$/g, '')
       // Remove images
       .replace(/\!\[(.*?)\][\[\(].*?[\]\)]/g, options.useImgAltText ? '$1' : '')
-      // Remove inline links
-      .replace(/\[(.*?)\][\[\(].*?[\]\)]/g, '$1')
-      // Remove blockquotes
-      .replace(/^\s{0,3}>\s?/g, '')
       // Remove reference-style links?
       .replace(/^\s{1,2}\[(.*?)\]: (\S+)( ".*?")?\s*$/g, '')
       // Remove atx-style headers

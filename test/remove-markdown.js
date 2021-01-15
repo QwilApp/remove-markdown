@@ -21,6 +21,12 @@ describe('remove Markdown', function () {
       expect(removeMd(string)).to.equal(expected);
     });
 
+    it('should not strip header', function () {
+      const string = '\n==something';
+      const expected = '\n==something';
+      expect(removeMd(string)).to.equal(expected);
+    });
+
     it('should leave non-matching markdown and not strip empty anchors', function () {
       const string = '*Javascript* [developers]()* are the _best_.';
       const expected = 'Javascript [developers]()* are the best.';

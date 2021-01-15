@@ -1,14 +1,11 @@
 module.exports = function(md, options) {
   options = options || {};
   options.listUnicodeChar = options.hasOwnProperty('listUnicodeChar') ? options.listUnicodeChar : false;
-  options.stripListLeaders = options.hasOwnProperty('stripListLeaders') ? options.stripListLeaders : true;
+  options.stripListLeaders = options.hasOwnProperty('stripListLeaders') ? options.stripListLeaders : false;
   options.gfm = options.hasOwnProperty('gfm') ? options.gfm : true;
   options.useImgAltText = options.hasOwnProperty('useImgAltText') ? options.useImgAltText : true;
 
   var output = md || '';
-
-  // Remove horizontal rules (stripListHeaders conflict with this rule, which is why it has been moved to the top)
-  output = output.replace(/^(-\s*?|\*\s*?|_\s*?){3,}\s*$/gm, '');
 
   try {
     if (options.stripListLeaders) {
@@ -29,29 +26,13 @@ module.exports = function(md, options) {
         .replace(/`{3}.*\n/g, '');
     }
     output = output
-      // Remove HTML tags
-      .replace(/<[^>]*>/g, '')
-      // Remove setext-style headers
-      .replace(/^[=\-]{2,}\s*$/g, '')
-      // Remove footnotes?
-      .replace(/\[\^.+?\](\: .*?$)?/g, '')
-      .replace(/\s{0,2}\[.*?\]: .*?$/g, '')
-      // Remove images
-      .replace(/\!\[(.*?)\][\[\(].*?[\]\)]/g, options.useImgAltText ? '$1' : '')
-      // Remove reference-style links?
-      .replace(/^\s{1,2}\[(.*?)\]: (\S+)( ".*?")?\s*$/g, '')
-      // Remove atx-style headers
-      // FIXME: commented to prevent ReDoS https://github.com/stiang/remove-markdown/pull/44
-      // .replace(/^(\n)?\s{0,}#{1,6}\s+| {0,}(\n)?\s{0,}#{0,}$/gm, '$1$2')
       // Remove emphasis (repeat the line to remove double emphasis)
       .replace(/([\*_]{1,3})(\S.*?\S{0,1})\1/g, '$2')
       .replace(/([\*_]{1,3})(\S.*?\S{0,1})\1/g, '$2')
       // Remove code blocks
       .replace(/(`{3,})(.*?)\1/gm, '$2')
       // Remove inline code
-      .replace(/`(.+?)`/g, '$1')
-      // Replace two or more newlines with exactly two? Not entirely sure this belongs here...
-      .replace(/\n{2,}/g, '\n\n');
+      .replace(/`(.+?)`/g, '$1');
   } catch(e) {
     console.error(e);
     return md;

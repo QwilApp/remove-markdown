@@ -81,7 +81,7 @@ describe('remove Markdown', function () {
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it('should remove horizontal rules with space-separated asterisks', function () {
+    it('should not remove horizontal rules with space-separated asterisks', function () {
       const string = 'Some text on a line\n\n* * *\n\nA line below';
       const expected = 'Some text on a line\n\n* * *\n\nA line below';
       expect(removeMd(string)).to.equal(expected);

@@ -10,7 +10,7 @@ describe('remove Markdown', function () {
     });
 
     it('should strip out remaining markdown', function () {
-      const string = '*Javascript* developers are the _best_.';
+      const string = '*Javascript* **developers** __are__ ~~the~~ _best_.';
       const expected = 'Javascript developers are the best.';
       expect(removeMd(string)).to.equal(expected);
     });
@@ -21,33 +21,33 @@ describe('remove Markdown', function () {
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it.skip('should leave non-matching markdown, but strip empty anchors', function () {
+    it('should leave non-matching markdown and not strip empty anchors', function () {
       const string = '*Javascript* [developers]()* are the _best_.';
-      const expected = 'Javascript developers* are the best.';
+      const expected = 'Javascript [developers]()* are the best.';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it('should strip HTML', function () {
+    it('should not strip HTML', function () {
       const string = '<p>Hello World</p>';
-      const expected = 'Hello World';
+      const expected = '<p>Hello World</p>';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it.skip('should strip anchors', function () {
+    it('should not strip anchors', function () {
       const string = '*Javascript* [developers](https://engineering.condenast.io/)* are the _best_.';
-      const expected = 'Javascript developers* are the best.';
+      const expected = 'Javascript [developers](https://engineering.condenast.io/)* are the best.';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it('should strip img tags', function () {
+    it('should not strip img tags', function () {
       const string = '![](https://placebear.com/640/480)*Javascript* developers are the _best_.';
-      const expected = 'Javascript developers are the best.';
+      const expected = '![](https://placebear.com/640/480)Javascript developers are the best.';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it('should use the alt-text of an image, if it is provided', function () {
+    it('should not use the alt-text of an image', function () {
       const string = '![This is the alt-text](https://www.example.com/images/logo.png)';
-      const expected = 'This is the alt-text';
+      const expected = '![This is the alt-text](https://www.example.com/images/logo.png)';
       expect(removeMd(string)).to.equal(expected);
     });
 
@@ -57,9 +57,9 @@ describe('remove Markdown', function () {
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it.skip('should leave hashtags in headings', function () {
+    it('should not strip hashtags in headings', function () {
       const string = '## This #heading contains #hashtags';
-      const expected = 'This #heading contains #hashtags';
+      const expected = '## This #heading contains #hashtags';
       expect(removeMd(string)).to.equal(expected);
     });
 
@@ -75,70 +75,70 @@ describe('remove Markdown', function () {
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it('should remove horizontal rules', function () {
+    it('should not remove horizontal rules', function () {
       const string = 'Some text on a line\n\n---\n\nA line below';
-      const expected = 'Some text on a line\n\nA line below';
+      const expected = 'Some text on a line\n\n---\n\nA line below';
       expect(removeMd(string)).to.equal(expected);
     });
 
     it('should remove horizontal rules with space-separated asterisks', function () {
       const string = 'Some text on a line\n\n* * *\n\nA line below';
-      const expected = 'Some text on a line\n\nA line below';
+      const expected = 'Some text on a line\n\n* * *\n\nA line below';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it.skip('should remove blockquotes', function () {
+    it('should not remove blockquotes', function () {
       const string = '>I am a blockquote';
-      const expected = 'I am a blockquote';
+      const expected = '>I am a blockquote';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it.skip('should remove blockquotes with spaces', function () {
+    it('should not remove blockquotes with spaces', function () {
       const string = '> I am a blockquote';
-      const expected = 'I am a blockquote';
+      const expected = '> I am a blockquote';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it.skip('should remove indented blockquotes', function () {
-        var tests = [
-            { string: ' > I am a blockquote', expected: 'I am a blockquote' },
-            { string: '  > I am a blockquote', expected: 'I am a blockquote' },
-            { string: '   > I am a blockquote', expected: 'I am a blockquote' },
-        ];
-        tests.forEach(function (test) {
-            expect(removeMd(test.string)).to.equal(test.expected);
-        });
+    it('should not remove indented blockquotes', function () {
+      var tests = [
+        { string: ' > I am a blockquote', expected: ' > I am a blockquote' },
+        { string: '  > I am a blockquote', expected: '  > I am a blockquote' },
+        { string: '   > I am a blockquote', expected: '   > I am a blockquote' },
+      ];
+      tests.forEach(function (test) {
+        expect(removeMd(test.string)).to.equal(test.expected);
+      });
     });
 
     it('should not remove greater than signs', function () {
       var tests = [
-          { string: '100 > 0', expected: '100 > 0' },
-          { string: '100 >= 0', expected: '100 >= 0' },
-          { string: '100>0', expected: '100>0' },
-          { string: '100 > 0', expected: '100 > 0' },
-          { string: '1 < 100', expected: '1 < 100' },
-          { string: '1 <= 100', expected: '1 <= 100' },
+        { string: '100 > 0', expected: '100 > 0' },
+        { string: '100 >= 0', expected: '100 >= 0' },
+        { string: '100>0', expected: '100>0' },
+        { string: '> 100 > 0', expected: '> 100 > 0' },
+        { string: '1 < 100', expected: '1 < 100' },
+        { string: '1 <= 100', expected: '1 <= 100' },
       ];
       tests.forEach(function (test) {
-          expect(removeMd(test.string)).to.equal(test.expected);
+        expect(removeMd(test.string)).to.equal(test.expected);
       });
     });
 
-    it('should strip unordered list leaders', function () {
+    it('should not strip unordered list leaders', function () {
       const string = 'Some text on a line\n\n* A list Item\n* Another list item';
-      const expected = 'Some text on a line\n\nA list Item\nAnother list item';
+      const expected = 'Some text on a line\n\n* A list Item\n* Another list item';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it('should strip ordered list leaders', function () {
+    it('should not strip ordered list leaders', function () {
       const string = 'Some text on a line\n\n9. A list Item\n10. Another list item';
-      const expected = 'Some text on a line\n\nA list Item\nAnother list item';
+      const expected = 'Some text on a line\n\n9. A list Item\n10. Another list item';
       expect(removeMd(string)).to.equal(expected);
     });
 
-    it.skip('should handle paragraphs with markdown', function () {
+    it('should not handle paragraphs with markdown', function () {
       const paragraph = '\n## This is a heading ##\n\nThis is a paragraph with [a link](http://www.disney.com/).\n\n### This is another heading\n\nIn `Getting Started` we set up `something` foo.\n\n  * Some list\n  * With items\n    * Even indented';
-      const expected = '\nThis is a heading\n\nThis is a paragraph with a link.\n\nThis is another heading\n\nIn Getting Started we set up something foo.\n\n  Some list\n  With items\n    Even indented';
+      const expected = '\n## This is a heading ##\n\nThis is a paragraph with [a link](http://www.disney.com/).\n\n### This is another heading\n\nIn Getting Started we set up something foo.\n\n  * Some list\n  * With items\n    * Even indented';
       expect(removeMd(paragraph)).to.equal(expected);
     });
 
